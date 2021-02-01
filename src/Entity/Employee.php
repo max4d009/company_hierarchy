@@ -1,173 +1,107 @@
 <?php
 
-
 namespace App\Entity;
 
+use App\Entity\Traits\IdEntity;
 use Doctrine\ORM\Mapping as ORM;
-use Gedmo\Mapping\Annotation as Gedmo;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 
 /**
- * Class Category
+ * Class Employee
  * @package App\Entity
- * @Gedmo\Tree(type="nested")
  * @ORM\Table(indexes={})
- * @ORM\Entity(repositoryClass="App\Repository\CategoryRepository")
+ * @ORM\Entity(repositoryClass="App\Repository\EmployeeRepository")
+ * @UniqueEntity(
+ *     fields={"email"}
+ * )
  */
-class Category
+class Employee
 {
-    /**
-     * @ORM\Column(name="title", type="string", length=64)
-     */
-    private string $title;
+    use IdEntity;
 
     /**
-     * @Gedmo\TreeLeft
-     * @ORM\Column(name="lft", type="integer")
+     * @ORM\Column(type="string", length=100)
      */
-    private int $lft;
+    private string $firstName;
+    /**
+     * @ORM\Column(type="string", length=100)
+     */
+    private string $lastName;
+    /**
+     * @ORM\Column(type="string", length=100, unique=true)
+     */
+    private string $email;
 
     /**
-     * @Gedmo\TreeLevel
-     * @ORM\Column(name="lvl", type="integer")
+     * @var Category
+     *
+     * @ORM\ManyToOne(targetEntity="App\Entity\Category", inversedBy="employeeList")
+     * @ORM\JoinColumn(name="category_id", referencedColumnName="id", onDelete="CASCADE", nullable=false)
      */
-    private int $lvl;
-
-    /**
-     * @Gedmo\TreeRight
-     * @ORM\Column(name="rgt", type="integer")
-     */
-    private int $rgt;
-
-    /**
-     * @Gedmo\TreeRoot
-     * @ORM\ManyToOne(targetEntity="Category")
-     * @ORM\JoinColumn(name="tree_root", referencedColumnName="id", onDelete="CASCADE")
-     */
-    private Category $root;
-
-    /**
-     * @Gedmo\TreeParent
-     * @ORM\ManyToOne(targetEntity="Category", inversedBy="children")
-     * @ORM\JoinColumn(name="parent_id", referencedColumnName="id", onDelete="CASCADE")
-     */
-    private Category $parent;
-
-    /**
-     * @ORM\OneToMany(targetEntity="Category", mappedBy="parent")
-     * @ORM\OrderBy({"lft" = "ASC"})
-     */
-    private array $children;
+    private Category $category;
 
     /**
      * @return string
      */
-    public function getTitle(): string
+    public function getFirstName(): string
     {
-        return $this->title;
+        return $this->firstName;
     }
 
     /**
-     * @param string $title
+     * @param string $firstName
      */
-    public function setTitle(string $title): void
+    public function setFirstName(string $firstName): void
     {
-        $this->title = $title;
+        $this->firstName = $firstName;
     }
 
     /**
-     * @return int
+     * @return string
      */
-    public function getLft(): int
+    public function getLastName(): string
     {
-        return $this->lft;
+        return $this->lastName;
     }
 
     /**
-     * @param int $lft
+     * @param string $lastName
      */
-    public function setLft(int $lft): void
+    public function setLastName(string $lastName): void
     {
-        $this->lft = $lft;
+        $this->lastName = $lastName;
     }
 
     /**
-     * @return int
+     * @return string
      */
-    public function getLvl(): int
+    public function getEmail(): string
     {
-        return $this->lvl;
+        return $this->email;
     }
 
     /**
-     * @param int $lvl
+     * @param string $email
      */
-    public function setLvl(int $lvl): void
+    public function setEmail(string $email): void
     {
-        $this->lvl = $lvl;
-    }
-
-    /**
-     * @return int
-     */
-    public function getRgt(): int
-    {
-        return $this->rgt;
-    }
-
-    /**
-     * @param int $rgt
-     */
-    public function setRgt(int $rgt): void
-    {
-        $this->rgt = $rgt;
+        $this->email = $email;
     }
 
     /**
      * @return Category
      */
-    public function getRoot(): Category
+    public function getCategory(): Category
     {
-        return $this->root;
+        return $this->category;
     }
 
     /**
-     * @param Category $root
+     * @param Category $category
      */
-    public function setRoot(Category $root): void
+    public function setCategory(Category $category): void
     {
-        $this->root = $root;
-    }
-
-    /**
-     * @return Category
-     */
-    public function getParent(): Category
-    {
-        return $this->parent;
-    }
-
-    /**
-     * @param Category $parent
-     */
-    public function setParent(Category $parent): void
-    {
-        $this->parent = $parent;
-    }
-
-    /**
-     * @return array
-     */
-    public function getChildren(): array
-    {
-        return $this->children;
-    }
-
-    /**
-     * @param array $children
-     */
-    public function setChildren(array $children): void
-    {
-        $this->children = $children;
+        $this->category = $category;
     }
 
 

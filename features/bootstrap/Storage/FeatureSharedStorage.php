@@ -2,16 +2,11 @@
 
 namespace BehatTest\Storage;
 
-use BehatTest\Context\StorageContext;
 use RuntimeException;
 use Symfony\Component\PropertyAccess\PropertyAccess;
 
-/**
- * @see StorageContext
- *
- * @package BehatTest\Storage
- */
-class FeatureSharedStorage
+
+final class FeatureSharedStorage
 {
     const FIND_ALL_PLACEHOLDERS_PATTERN = '/{{(.*?)}}/';
     const IS_A_PLACEHOLDER_PATTERN = '/^{{(.*)}}$/';
@@ -55,7 +50,7 @@ class FeatureSharedStorage
      */
     public function get(string $key)
     {
-        return $this->storage[$key];
+        return $this->storage[$key] ?? null;
     }
 
     /**

@@ -3,9 +3,6 @@ services:
 
   pg_db:
     image: postgres
-    networks:
-      - my-test-network
-    hostname: pgsql
     restart: always
     environment:
       - POSTGRES_PASSWORD=secret
@@ -21,21 +18,15 @@ services:
     image: webdevops/php-dev:7.4
     ports:
       - '9000:9000'
-    networks:
-      - my-test-network
-#    hostname: php-fpm
+    hostname: php-fpm
     volumes:
       - "./:/app:rw"
-    working_dir: "/app:rw"
+    working_dir: "/app"
     depends_on:
       - pg_db
 
   nginx:
-    build:
-      context: ./nginx
     image: webdevops/nginx
-    networks:
-      - my-test-network
     hostname: nginx
     environment:
       WEB_DOCUMENT_ROOT: /app/public
@@ -47,6 +38,3 @@ services:
       - "./:/app"
     depends_on:
       - php-fpm
-
-networks:
-  my-test-network:

@@ -1,6 +1,6 @@
 <?php
 
-namespace App\NasaApi\Dto\Request;
+namespace App\FrontApi\Dto\Request;
 
 use App\Enum\CrudActionEnum;
 use App\NasaApi\Exception\NasaApiException;
@@ -48,7 +48,6 @@ abstract class BaseRequestDto
      * @param Request $request
      * @param bool $postBody
      * @return array
-     * @throws NasaApiException
      */
     protected function getOptions(Request $request, $postBody = true)
     {
@@ -70,10 +69,8 @@ abstract class BaseRequestDto
      * Вызывыется из Конвертера параметров src/ParamConverter/RequestToDtoConverter
      * Заполняет DTO из реквеста.
      * @param Request $request
-     * @throws NasaApiException
      * @throws \Doctrine\Common\Annotations\AnnotationException
      * @throws \ReflectionException
-     * @throws \Symfony\Component\Serializer\Exception\ExceptionInterface
      */
     public function resolveByRequest(Request $request)
     {

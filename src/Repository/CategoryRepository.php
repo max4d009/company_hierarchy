@@ -2,49 +2,25 @@
 
 namespace App\Repository;
 
-
-use App\Entity\Asteroid;
-use App\NasaApi\Dto\Request\Filter\BaseSort;
-use App\NasaApi\Dto\Request\Filter\FilterAbstract;
+use App\Entity\Category;
+use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
- * @method Asteroid|null find($id, $lockMode = null, $lockVersion = null)
- * @method Asteroid|null findOneBy(array $criteria, array $orderBy = null)
- * @method Asteroid[]    findAll()
- * @method Asteroid[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
+ * @method Category|null find($id, $lockMode = null, $lockVersion = null)
+ * @method Category|null findOneBy(array $criteria, array $orderBy = null)
+ * @method Category[]    findAll()
+ * @method Category[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
  */
-class AsteroidRepository extends RepositoryAbstract
+class CategoryRepository extends ServiceEntityRepository
 {
     /**
-     * AsteroidRepository constructor.
+     * CategoryRepository constructor.
      * @param ManagerRegistry $registry
      */
     public function __construct(ManagerRegistry $registry)
     {
-        parent::__construct($registry, Asteroid::class);
-    }
-
-
-    /**
-     * @param FilterAbstract[] $filters
-     * @param BaseSort[] $sortList
-     * @param int $limit
-     * @param int $offset
-     * @return Asteroid[]
-     */
-    public function getAsteroidsByFilters(array $filters, array $sortList, int $limit, int $offset)
-    {
-        $qb = $this->getEntityManager()->createQueryBuilder();
-        $qb->from('App:Asteroid', 'a');
-        $qb->select('a');
-
-        if($limit) $qb->setMaxResults($limit);
-        if($offset) $qb->setFirstResult($offset);
-
-        $this->injectFilters($qb, $filters, 'a');
-        $this->injectSort($qb, $sortList, 'a');
-        return $qb->getQuery()->getResult();
+        parent::__construct($registry, Category::class);
     }
 
 }

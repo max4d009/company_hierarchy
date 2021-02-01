@@ -2,11 +2,11 @@
 
 namespace BehatTest\Context;
 
-use App\Entity\Asteroid;
 use Behat\Behat\Context\Context;
 use BehatTest\Models\RequestModel;
 use BehatTest\Storage\FeatureSharedStorage;
 use BehatTest\Traits\DoctrineTrait;
+use Doctrine\Common\DataFixtures\Purger\ORMPurger;
 use Doctrine\DBAL\Driver\Exception;
 use GuzzleHttp\Client;
 use GuzzleHttp\Psr7\Response;
@@ -44,12 +44,8 @@ abstract class AbstractFeatureContext implements Context
     public function beforeScenario(): void
     {
         $this->request = RequestModel::getInstance();
-        $connection = $this->getEm()->getConnection();
-        // todo: need refactor
-        $this->getEm()->createQuery('DELETE FROM '. Asteroid::class)->execute();
-        $statement = $connection->prepare("DELETE FROM messenger_messages");
-        $statement->execute();
-
+        $purger = new ORMPurger($this->getEm());
+        $purger->purge();
     }
 
 

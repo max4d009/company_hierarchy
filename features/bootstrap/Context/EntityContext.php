@@ -2,9 +2,8 @@
 
 namespace BehatTest\Context;
 
-use App\Entity\Asteroid;
-use App\Messenger\Nasa\Handler\UpdateAsteroidHandler;
-use App\Messenger\Nasa\Message\UpdateAsteroidMessage;
+
+use App\Entity\Category;
 use Behat\Gherkin\Node\TableNode;
 use BehatTest\Storage\FeatureSharedStorage;
 use BehatTest\Traits\DoctrineTrait;
@@ -28,16 +27,13 @@ class EntityContext extends AbstractFeatureContext
 {
     use DoctrineTrait;
 
-    private const UPDATE_ASTEROID_MESSAGE = 'UpdateAsteroidMessage';
-    private const UPDATE_ASTEROID_HANDLER = 'UpdateAsteroidHandler';
-    private const ASTEROID = 'Asteroid';
+    private const CATEGORY = 'Category';
+
 
     public function getEntityMapping(): array
     {
         return [
-            self::UPDATE_ASTEROID_MESSAGE => UpdateAsteroidMessage::class,
-            self::UPDATE_ASTEROID_HANDLER => UpdateAsteroidHandler::class,
-            self::ASTEROID => Asteroid::class,
+            self::CATEGORY => Category::class,
         ];
     }
     /** @var PropertyAccessor */
@@ -93,21 +89,17 @@ class EntityContext extends AbstractFeatureContext
     }
 
     /**
-     * @Then DB should contain :entityName list with fields:
-     * | field | value |
-     *
-     * @param string    $entityName
-     * @param TableNode $table
-     *
-     * @throws EntityNotFoundException|\Exception
+     * @Then Searched in table for entity :entityName and found the records:
+     * @throws EntityNotFoundException
      */
-    public function dbShouldContainListEntity(string $entityName, TableNode $table): void
+    public function searchedInTableForEntityAndFoundTheRecords(string $entityName, TableNode $table)
     {
         $this->assertByTableAndClassName($entityName, $table, true);
     }
 
+
     /**
-     * @Then DB should not contain :entityName list with fields:
+     * @Then Searched in table for entity :entityName and not found the records:
      * | field | value |
      *
      * @param string    $entityName
@@ -115,7 +107,7 @@ class EntityContext extends AbstractFeatureContext
      *
      * @throws EntityNotFoundException|\Exception
      */
-    public function dbShouldNotContainListEntity(string $entityName, TableNode $table): void
+    public function searchedInTableForEntityAndNotFoundTheRecords(string $entityName, TableNode $table): void
     {
         $this->assertByTableAndClassName($entityName, $table, false);
     }
@@ -198,34 +190,37 @@ class EntityContext extends AbstractFeatureContext
      */
     private function assertByTableAndClassName(string $entityName, TableNode $table, bool $mustContain)
     {
-        $repository = $this->getRepositoryByEntityName($entityName);
+        $repository = $this->getEntityRepositoryByEntityName($entityName);
 
         $criteria = [];
         $arrayKeys = [];
         foreach ($table->getColumnsHash() as $keyRow => $rows) {
             foreach ($rows as $key => $value){
 
-
                 $value = $this->featureStorage->replacePlaceholderString($value);
 
+                // For DateTime
                 if (mb_strpos($key, 'date_') === 0 && mb_strpos($value, 'DateTime=') === 0) {
                     $value = new \DateTime(str_replace('DateTime=', '', $value));
                 }
 
+                // For Boolean
                 if ($value === 'true') {
                     $value = true;
                 }
-
                 if ($value === 'false') {
                     $value = false;
                 }
+                if ($value === 'null') {
+                    $value = null;
+                }
 
+                // For json fields
                 if(is_string($value) && substr($value, 0, 6) == 'array['){
                     $value = str_replace('array[', '', $value);
                     $value = str_replace(']', '', $value);
                     $value = explode(',', $value);
                 }
-
 
                 if(!is_array($value)){
                     $criteria[$key] = $value;
@@ -234,7 +229,9 @@ class EntityContext extends AbstractFeatureContext
                 }
             }
 
+            // For normal fields
             if(!$arrayKeys){
+
                 $res =  $repository->findOneBy($criteria);
                 if($mustContain){
                     if(!$res){
@@ -245,6 +242,7 @@ class EntityContext extends AbstractFeatureContext
                         throw new EntityNotFoundException(sprintf('%s Запись существует, хотя не должна', $entityName));
                     }
                 }
+                // For array fields
             } else {
                 $res = $repository->findOneBy($criteria);
                 foreach ($arrayKeys as $field => $array){
@@ -267,8 +265,6 @@ class EntityContext extends AbstractFeatureContext
                         throw new EntityNotFoundException(sprintf('%s Запись существует, хотя не должна', $entityName));
                     }
                 }
-
-
             }
         }
     }
@@ -324,26 +320,66 @@ class EntityContext extends AbstractFeatureContext
     }
 
     /**
-     * @Given Asteroid table has contain:
-     * @throws \Exception
+     * @Given Set entity namespace as :namespace
      */
-    public function asteroidTableHasContain(TableNode $node)
+    public function setEntityNamespaceAs($namespace)
     {
-        $this->save($node, function (array &$row) {
-            return (new Asteroid());
-        });
+        $this->featureStorage->set('defaultEntityNamespace', $namespace);
+    }
+
+    /**
+     * @param string $entityName
+     * @return mixed
+     * @throws Exception
+     */
+    private function getEntityByName(string $entityName)
+    {
+        $namespace = $this->featureStorage->get('defaultEntityNamespace');
+        if(!$namespace){
+            throw new Exception('(!) Before working with entity by name need Set entity namespace');
+        }
+        $classEntity = $namespace.  '\\' . $entityName;
+        if(!class_exists($classEntity)){
+            throw new EntityNotFoundException(sprintf('(!) Class %s Не найден', $classEntity));
+        }
+        $entity = new $classEntity;
+        return new $entity;
+    }
+
+    /**
+     * @param string $entityName
+     * @return ObjectRepository
+     * @throws Exception
+     */
+    private function getEntityRepositoryByEntityName(string $entityName)
+    {
+        $entity = $this->getEntityByName($entityName);
+        $repository = $this->getEm()->getRepository(get_class($entity));
+        return $repository;
     }
 
 
+
     /**
-     * @param TableNode $node
+     * @Given Table for entity :entityName contains:
+     * @throws Exception
+     */
+    public function tableForEntityContain($entityName, TableNode $tableNode)
+    {
+        $this->save($tableNode, function () use ($entityName) {
+            return ($this->getEntityByName($entityName));
+        });
+    }
+
+    /**
+     * @param TableNode $tableNode
      * @param Closure $closure
      *
      * @throws \Exception
      */
-    protected function save(TableNode $node, Closure $closure): void
+    protected function save(TableNode $tableNode, Closure $closure): void
     {
-        foreach ($node->getColumnsHash() as $row) {
+        foreach ($tableNode->getColumnsHash() as $row) {
             $row = $this->featureStorage->replacePlaceholdersInArrayRecursive($row);
 
             $object = $closure($row);
@@ -354,20 +390,50 @@ class EntityContext extends AbstractFeatureContext
             }
 
             foreach ($row as $attribute => $value) {
-
-                if (mb_strpos($value, 'DateTime=') === 0) {
-                    $value = new DateTime(str_replace('DateTime=', '', $value));
-                } elseif (mb_strpos($value, 'Date=') === 0) {
-                    $time = new DateTime(str_replace('Date=', '', $value));
-                    $value = $time->setTime(0,0,0,0);
+                if($value == 'null'){
+                    continue;
                 }
 
+                if(!is_object($value)){
+                    if (mb_strpos($value, 'DateTime=') === 0) {
+                        $value = new DateTime(str_replace('DateTime=', '', $value));
+                    } elseif (mb_strpos($value, 'Date=') === 0) {
+                        $time = new DateTime(str_replace('Date=', '', $value));
+                        $value = $time->setTime(0,0,0,0);
+                    }
+                }
                 $this->accessor->setValue($object, $attribute, $value);
             }
-
             $this->getEm()->persist($object);
         }
-
         $this->getEm()->flush();
     }
+
+    /**
+     * @When Clear table for entity :entityName
+     * @throws Exception
+     */
+    public function clearTableForEntity($entityName)
+    {
+        $repository = $this->getEntityRepositoryByEntityName($entityName);
+        foreach ($repository->findAll() as $entity){
+            $this->em->remove($entity);
+        }
+        $this->em->flush();
+    }
+
+
+    /**
+     * @Given Delete a table row for entity :entityName by id :id
+     * @throws Exception
+     */
+    public function deleteATableRowForEntityById($entityName, $id)
+    {
+        $id = $this->featureStorage->replacePlaceholderString($id);
+        $repository = $this->getEntityRepositoryByEntityName($entityName);
+        $entity = $repository->find($id);
+        $this->em->remove($entity);
+        $this->em->flush();
+    }
+
 }

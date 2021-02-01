@@ -14,7 +14,7 @@ use Symfony\Component\HttpFoundation\Request;
 class RequestModel
 {
     /** @var string */
-    private $host = '127.0.0.1:8000';
+    private $host = '172.19.0.4:80';
 
     /** @var string */
     private $scheme = 'http';

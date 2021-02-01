@@ -2,6 +2,6 @@
 
 namespace App\FrontApi\Dto\Interfaces\Request;
 
-interface GetCategoriesRequestInterface
+interface GetEmployeesRequestInterface
 {
 }

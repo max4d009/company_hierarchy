@@ -1,18 +1,22 @@
-Feature: getAsteroids
+Feature: getCategories
 
   Background:
     Given Set entity namespace as "App\Entity"
 
-    When Table for entity "Category" has contain:
-      | storage_key | name | parent    |
-      | cat_1       | cat1 | null      |
-      | cat_2       | cat2 | {{cat_1}} |
-      | cat_3       | cat3 | {{cat_2}} |
+  Scenario: getCategories.
 
-    When Table for entity "Employee" has contain:
-      | storage_key | email           | category  | firstName | lastName |
-      | em_1        | test_1_@test.ru | {{cat_1}} | first_1   | first 2  |
-      | em_2        | test_2_@test.ru | {{cat_2}} | first_2   | first 2  |
-      | em_3        | 3tes_3_@test.ru | {{cat_3}} | first_3   | first 3  |
+    Given Table for entity "Category" contains:
+      | storage_key | name | parent |
+      | c1          | cat1 | null   |
+      | c2          | cat2 | {{c1}} |
+      | c3          | cat3 | {{c2}} |
 
-  Scenario: getAsteroids-oneOfString-Filter.
+    Given Table for entity "Employee" contains:
+      | storage_key | category | firstName | lastName | email       |
+      | e1          | {{c1}}   | f1        | l1       | e1_@test.ru |
+      | e2          | {{c1}}   | f2        | l2       | e2_@test.ru |
+      | e3          | {{c2}}   | f3        | l3       | e3_@test.ru |
+
+
+    And I send a GET request to "/front-api/v1/categories"
+    And print last response

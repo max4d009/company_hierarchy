@@ -1,7 +1,7 @@
 <?php
 
-namespace App\FrontApi\Dto\Interfaces\Request;
+namespace App\FrontApi\Dto\Interfaces\Response;
 
-interface GetCategoriesResponseInterface
+interface GetEmployeesResponseInterface
 {
 }

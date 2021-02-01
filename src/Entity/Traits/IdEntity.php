@@ -7,7 +7,7 @@ trait IdEntity
     /**
      * @var int
      *
-     * @ORM\Column(type="bigint")
+     * @ORM\Column(type="integer")
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="IDENTITY")
      */

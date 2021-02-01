@@ -1,82 +1,51 @@
 <?php
 
-namespace App\Service\UGStat;
-
-use App\Service\UGStat\StatGetStrategy\UGStatTypeInterface;
+namespace App\Service\FrontApiVersions;
 
 
-/**
- * Class UGStatTypeContext
- */
-class StatGetContext
+class FrontApiContext
 {
+    /**
+     * @var FrontApiInterface[]
+     */
+    private array $apiServiceVersions = [];
+
 
     /**
-     * @var array
+     * @param FrontApiInterface $apiService
      */
-    private $strategies = array();
-
-
-    /**
-     * @param UGStatTypeInterface $strategy
-     */
-    public function addStrategy(UGStatTypeInterface $strategy)
+    public function addApiVersion(FrontApiInterface $apiService)
     {
-        $this->strategies[] = $strategy;
+        $this->apiServiceVersions[] = $apiService;
     }
 
 
     /**
-     * @param $strategyName
-     * @return null|UGStatTypeInterface $strategy
+     * @param string $frontApiVersion
+     * @return FrontApiInterface|null
+     * @throws \Exception
      */
-    public function getStrategy($strategyName)
+    public function getApiService(string $frontApiVersion)
     {
-        foreach ($this->strategies as $strategy)
-        {
-            if ($strategy->getName() == $strategyName)
-            {
-                return $strategy;
+        if(!in_array($frontApiVersion, FrontApiVersionsEnum::getVersionList())){
+            throw new \Exception('wrong api version');
+        }
+
+        foreach ($this->apiServiceVersions as $service) {
+
+            if ($service->getApiVersion() == $frontApiVersion) {
+                return $service;
             }
         }
         return null;
     }
 
     /**
-     * @return UGStatTypeInterface[]
+     * @return FrontApiInterface[]
      */
     public function getStrategies()
     {
-        return $this->strategies;
-    }
-
-
-    /**
-     * @param $strategies
-     */
-    public function setStrategies($strategies)
-    {
-        $this->strategies = $strategies;
-    }
-
-    /**
-     * @return UGStatTypeInterface[]
-     */
-    public function getStrategyList()
-    {
-        return $this->strategies;
-    }
-
-    /**
-     * @return string
-     */
-    public function getStrategyListString()
-    {
-        $strategyNameList = [];
-        foreach ($this->strategies as $strategy){
-            $strategyNameList[] = $strategy->getName();
-        }
-        return implode(',',  $strategyNameList);
+        return $this->apiServiceVersions;
     }
 
 }

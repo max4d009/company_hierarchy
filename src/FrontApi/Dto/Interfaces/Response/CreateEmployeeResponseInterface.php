@@ -1,7 +1,7 @@
 <?php
 
-namespace App\FrontApi\Dto\Interfaces;
+namespace App\FrontApi\Dto\Interfaces\Response;
 
-interface CreateEmployeeRequestInterface
+interface CreateEmployeeResponseInterface
 {
 }

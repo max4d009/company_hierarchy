@@ -3,17 +3,15 @@
 namespace App\FrontApi\Dto\Response\V1;
 
 
-use App\Entity\Category;
 use App\Entity\Employee;
-use App\FrontApi\Dto\Response\BaseResponseDto;
 use JMS\Serializer\Annotation as Serializer;
 use Nelmio\ApiDocBundle\Annotation\Model;
 use OpenApi\Annotations as OA;
 
 /**
- * Class GetEmployeesResponseDto
+ * EmployeeDto
  */
-class GetEmployeesResponseDto extends BaseResponseDto
+class EmployeeDto
 {
     /**
      * @var int
@@ -140,22 +138,6 @@ class GetEmployeesResponseDto extends BaseResponseDto
     }
 
     /**
-     * @return Category
-     */
-    public function getCategory(): Category
-    {
-        return $this->category;
-    }
-
-    /**
-     * @param Category $category
-     */
-    public function setCategory(Category $category): void
-    {
-        $this->category = $category;
-    }
-
-    /**
      * @return int
      */
     public function getSubordinatesCount(): int
@@ -169,6 +151,22 @@ class GetEmployeesResponseDto extends BaseResponseDto
     public function setSubordinatesCount(int $subordinatesCount): void
     {
         $this->subordinatesCount = $subordinatesCount;
+    }
+
+    /**
+     * @return CategoryDto
+     */
+    public function getCategory(): CategoryDto
+    {
+        return $this->category;
+    }
+
+    /**
+     * @param CategoryDto $category
+     */
+    public function setCategory(CategoryDto $category): void
+    {
+        $this->category = $category;
     }
 
 
