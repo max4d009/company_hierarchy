@@ -64,13 +64,15 @@ class EmployeeDto
     /**
      * @param Employee $employee
      */
-    private function fillFromEntity(Employee $employee)
+    public function fillFromEntity(Employee $employee)
     {
         $this->id = $employee->getId();
         $this->firstName = $employee->getFirstName();
         $this->lastName = $employee->getLastName();
         $this->email = $employee->getEmail();
-        $this->category->fillFromEntity($employee->getCategory());
+        $categoryDto = new CategoryDto();
+        $categoryDto->fillFromEntity($employee->getCategory());
+        $this->category = $categoryDto;
     }
 
     /**

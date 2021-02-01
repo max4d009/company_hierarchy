@@ -17,9 +17,21 @@ class GetEmployeesResponseDto extends BaseResponseDto
      * @OA\Property(
      *      type="array",
      *      @OA\Items(ref=@Model(type=EmployeeDto::class)),
-     *      description="bla bla bla"
+     *      description="List of employees"
      * )
      * @Serializer\Groups({"employees_req"})
      */
-    private EmployeeDto $employees;
+    private array $employees;
+
+
+    public static function fetch(array $employeeList)
+    {
+        $response = new self();
+        foreach ($employeeList as $employee){
+            $dto = new EmployeeDto();
+            $dto->fillFromEntity($employee);
+            $response->employees[] = $dto;
+        }
+        return $response;
+    }
 }

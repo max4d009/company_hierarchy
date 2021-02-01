@@ -51,13 +51,13 @@ class FrontApiController extends AbstractFOSRestController
      *
      * @param GetCategoriesRequestDto $dto
      * @param string $version
-     * @return array
+     * @return GetCategoriesResponseDto
      * @throws \Exception
      */
     public function getCategories(GetCategoriesRequestDto $dto, string $version)
     {
         $categoryList = $this->frontApiContext->getApiService($version)->getCategories($dto);
-        return CategoryDto::list($categoryList);
+        return GetCategoriesResponseDto::fetch($categoryList);
     }
 
     /**
@@ -83,13 +83,13 @@ class FrontApiController extends AbstractFOSRestController
      *
      * @param GetEmployeesRequestDto $dto
      * @param string $version
-     * @return array
+     * @return GetEmployeesResponseDto
      * @throws \Exception
      */
     public function getEmployees(GetEmployeesRequestDto $dto, string $version)
     {
-        $categoryList = $this->frontApiContext->getApiService($version)->getEmployees($dto);
-        return EmployeeDto::list($categoryList);
+        $employeeList = $this->frontApiContext->getApiService($version)->getEmployees($dto);
+        return GetEmployeesResponseDto::fetch($employeeList);
     }
 
 
