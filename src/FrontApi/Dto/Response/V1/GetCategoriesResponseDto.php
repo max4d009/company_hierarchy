@@ -18,7 +18,7 @@ class GetCategoriesResponseDto extends BaseResponseDto
      *      @OA\Items(ref=@Model(type=CategoryDto::class)),
      *      description="List of categories"
      * )
-     * @Serializer\Groups({"employees_req"})
+     * @Serializer\Groups({"categories_req"})
      */
     private array $categories;
 

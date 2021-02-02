@@ -9,7 +9,6 @@ use App\FrontApi\Dto\Interfaces\Request\CreateEmployeeRequestInterface;
 use App\FrontApi\Dto\Interfaces\Request\GetCategoriesRequestInterface;
 use App\FrontApi\Dto\Interfaces\Request\GetEmployeesRequestInterface;
 use App\FrontApi\Dto\Interfaces\Response\CreateEmployeeResponseInterface;
-use App\FrontApi\Dto\Interfaces\Response\GetEmployeesResponseInterface;
 
 /**
  * Interface FrontApiInterface

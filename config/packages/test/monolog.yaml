@@ -1,0 +1,22 @@
+monolog:
+    handlers:
+        main:
+            type: fingers_crossed
+            action_level: error
+            handler: nested
+            excluded_http_codes: [404, 405]
+            channels: ["!event"]
+        nested:
+            type: stream
+            path: "%kernel.logs_dir%/%kernel.environment%.log"
+            level: debug
+
+        front_api:
+            type: rotating_file
+            path:  '%kernel.logs_dir%/front_api_%kernel.environment%.log'
+            level: debug
+            max_files: 1
+            channels: [frontApi]
+    channels: [
+        'frontApi'
+    ]

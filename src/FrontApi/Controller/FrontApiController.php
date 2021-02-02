@@ -4,8 +4,6 @@ namespace App\FrontApi\Controller;
 
 use App\FrontApi\Dto\Request\V1\GetCategoriesRequestDto;
 use App\FrontApi\Dto\Request\V1\GetEmployeesRequestDto;
-use App\FrontApi\Dto\Response\V1\CategoryDto;
-use App\FrontApi\Dto\Response\V1\EmployeeDto;
 use App\FrontApi\Dto\Response\V1\GetCategoriesResponseDto;
 use App\FrontApi\Dto\Response\V1\GetEmployeesResponseDto;
 use App\Service\FrontApiVersions\FrontApiContext;
@@ -43,11 +41,11 @@ class FrontApiController extends AbstractFOSRestController
      *
      * @OA\Response(
      *     response="200",
-     *     @Model(type=GetCategoriesResponseDto::class),
-     *      description="Get a List of category"
+     *     @Model(type=GetCategoriesResponseDto::class, groups={"categories_req"}),
+     *      description="Get a List of Category"
      * )
      * @Rest\Get("/{version}/categories")
-     * @Rest\View(statusCode=200)
+     * @Rest\View(statusCode=200, serializerGroups={"categories_req"})
      *
      * @param GetCategoriesRequestDto $dto
      * @param string $version
@@ -76,10 +74,10 @@ class FrontApiController extends AbstractFOSRestController
      * @OA\Response(
      *     response="200",
      *     @Model(type=GetEmployeesResponseDto::class, groups={"employees_req"}),
-     *      description="Get a List of employees"
+     *      description="Get a List of Employees"
      * )
      *
-     * @Rest\View(statusCode=200)
+     * @Rest\View(statusCode=200, serializerGroups={"employees_req"})
      *
      * @param GetEmployeesRequestDto $dto
      * @param string $version

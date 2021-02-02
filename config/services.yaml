@@ -39,3 +39,9 @@ services:
     App\EventListener\DatabaseActivitySubscriber:
         tags:
             - { name: 'doctrine.event_subscriber' }
+
+    front.api.listener.exception:
+        class: App\FrontApi\Listener\ExceptionListener
+        arguments: ["@monolog.logger.frontApi"]
+        tags:
+            - { name: "kernel.event_listener", event: "kernel.exception", method: "onKernelException", priority: 300 }

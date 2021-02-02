@@ -2,15 +2,8 @@
 
 namespace App\FrontApi\Dto\Request;
 
-use App\Enum\CrudActionEnum;
-use App\NasaApi\Exception\NasaApiException;
-use Doctrine\Common\Annotations\AnnotationReader;
+use App\FrontApi\Exception\FrontApiException;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\Serializer\Mapping\Factory\ClassMetadataFactory;
-use Symfony\Component\Serializer\Mapping\Loader\AnnotationLoader;
-use Symfony\Component\Serializer\NameConverter\MetadataAwareNameConverter;
-use Symfony\Component\Serializer\Normalizer\GetSetMethodNormalizer;
-use Symfony\Component\Serializer\Serializer;
 use Symfony\Component\Validator\Context\ExecutionContextInterface;
 
 
@@ -19,7 +12,6 @@ use Symfony\Component\Validator\Context\ExecutionContextInterface;
  */
 abstract class BaseRequestDto
 {
-    protected $denormalizer;
 
     public function __construct()
     {
@@ -44,7 +36,6 @@ abstract class BaseRequestDto
     }
 
     /**
-     * Получаеи на вход Request и возвращает массив параметров из него. Производит дополнительные обработки.
      * @param Request $request
      * @param bool $postBody
      * @return array
@@ -66,20 +57,19 @@ abstract class BaseRequestDto
 
 
     /**
-     * Вызывыется из Конвертера параметров src/ParamConverter/RequestToDtoConverter
-     * Заполняет DTO из реквеста.
      * @param Request $request
      * @throws \Doctrine\Common\Annotations\AnnotationException
      * @throws \ReflectionException
+     * @throws FrontApiException
      */
     public function resolveByRequest(Request $request)
     {
-        if($request->getMethod() == CrudActionEnum::POST or $request->getMethod() == CrudActionEnum::PUT){
+        if($request->getMethod() == 'POST' or $request->getMethod() == 'PUT'){
             if($request->getContent() == ''){
-                throw new NasaApiException('Request body raw is null', 400, 'Need Json Body RAW');
+                throw new FrontApiException('Request body raw is null');
             }
             if(!$this->isJSON($request->getContent())){
-                throw new NasaApiException('Request body raw is bad json', 400, 'Check Json Body RAW');
+                throw new FrontApiException('Request body raw is bad json');
             }
             $params = $this->getOptions($request, true);
         } else {
@@ -96,28 +86,14 @@ abstract class BaseRequestDto
      * @param array $params
      * @throws \Doctrine\Common\Annotations\AnnotationException
      * @throws \ReflectionException
-     * @throws \Symfony\Component\Serializer\Exception\ExceptionInterface
      */
     protected function resolveByParams(array $params)
     {
-        // todo: need refactor
-       $classMetadataFactory = new ClassMetaDataFactory(
-           new AnnotationLoader(new AnnotationReader())
-        );
-        $metadataAwareNameConverter = new MetadataAwareNameConverter($classMetadataFactory);
-        $normalizers = [new GetSetMethodNormalizer($classMetadataFactory, $metadataAwareNameConverter)];
-
-        $serializer = new Serializer($normalizers);
-        $requestDto = $serializer->denormalize($params, get_class($this));
-
-
-        $fromObject = $this->getPublicMethods($requestDto,'get');
         $toObject = $this->getPublicMethods($this,'set');
-
-        foreach ($fromObject as $nameFrom => $from){
+        foreach ($params as $key => $value){
             foreach ($toObject as $nameTo => $to){
-                if($nameFrom == $nameTo){
-                    $this->{'set'.$nameTo}($requestDto->{'get'.$nameTo}());
+                if(ucfirst($key) == $nameTo){
+                    $this->{'set'.$nameTo}($value);
                 }
             }
         }
@@ -147,11 +123,4 @@ abstract class BaseRequestDto
         return $publicMethods;
     }
 
-    /**
-     * @param array $updateList
-     */
-    public function setUpdateList(array $updateList): void
-    {
-        $this->updateList = $updateList;
-    }
 }

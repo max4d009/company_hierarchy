@@ -55,6 +55,9 @@ class FrontApiV1Service implements FrontApiInterface
      */
     public function getEmployees(GetEmployeesRequestInterface $createEmployeeDto): array
     {
+        if($createEmployeeDto->getCategoryId()){
+            return $this->employeeRepository->findBy(['category'=>$createEmployeeDto->getCategoryId()]);
+        }
         return $this->employeeRepository->findAll();
     }
 }

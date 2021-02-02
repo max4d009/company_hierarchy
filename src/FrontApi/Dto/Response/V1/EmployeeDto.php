@@ -39,27 +39,7 @@ class EmployeeDto
      * @Serializer\Groups({"employees_req"})
      */
     private CategoryDto $category;
-    /**
-     * @OA\Property(description="Count of all subordinated employees withing nested subtree under the employee")
-     * @Serializer\Groups({"employees_req"})
-     */
-    private int $subordinatesCount = 0;
 
-
-    /**
-     * @param array $employeeList
-     * @return array
-     */
-    public static function list(array $employeeList)
-    {
-        $result = [];
-        foreach ($employeeList as $employee){
-            $response = new self();
-            $response->fillFromEntity($employee);
-            $result[] = $response;
-        }
-        return $result;
-    }
 
     /**
      * @param Employee $employee
@@ -140,22 +120,6 @@ class EmployeeDto
     }
 
     /**
-     * @return int
-     */
-    public function getSubordinatesCount(): int
-    {
-        return $this->subordinatesCount;
-    }
-
-    /**
-     * @param int $subordinatesCount
-     */
-    public function setSubordinatesCount(int $subordinatesCount): void
-    {
-        $this->subordinatesCount = $subordinatesCount;
-    }
-
-    /**
      * @return CategoryDto
      */
     public function getCategory(): CategoryDto
@@ -170,7 +134,5 @@ class EmployeeDto
     {
         $this->category = $category;
     }
-
-
 
 }

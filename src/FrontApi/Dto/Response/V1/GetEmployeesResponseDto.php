@@ -3,6 +3,7 @@
 namespace App\FrontApi\Dto\Response\V1;
 
 
+use App\Entity\Employee;
 use App\FrontApi\Dto\Response\BaseResponseDto;
 use JMS\Serializer\Annotation as Serializer;
 use Nelmio\ApiDocBundle\Annotation\Model;
@@ -21,9 +22,12 @@ class GetEmployeesResponseDto extends BaseResponseDto
      * )
      * @Serializer\Groups({"employees_req"})
      */
-    private array $employees;
+    private array $employees = [];
 
-
+    /**
+     * @param Employee[] $employeeList
+     * @return GetEmployeesResponseDto
+     */
     public static function fetch(array $employeeList)
     {
         $response = new self();

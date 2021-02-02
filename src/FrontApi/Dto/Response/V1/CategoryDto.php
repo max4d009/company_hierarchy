@@ -14,31 +14,23 @@ class CategoryDto
     /**
      * @var int
      * @OA\Property(description="The unique identifier of the category.")
-     * @Serializer\Groups({"employees_req"})
+     * @Serializer\Groups({"categories_req"})
      */
-    public int $id;
+    private int $id;
 
     /**
      * @var string
      * @OA\Property(description="The name of category.")
-     * @Serializer\Groups({"employees_req"})
+     * @Serializer\Groups({"categories_req"})
      */
-    public string $name;
+    private string $name;
 
     /**
-     * @param array $categoryList
-     * @return array
+     * @var string
+     * @OA\Property(description="Count of all subordinated employees.")
+     * @Serializer\Groups({"employees_req"})
      */
-    public static function list(array $categoryList)
-    {
-        $result = [];
-        foreach ($categoryList as $category){
-            $response = new self();
-            $response->fillFromEntity($category);
-            $result[] = $response;
-        }
-        return $result;
-    }
+    private int $subordinatesCount;
 
     /**
      * @param Category $category
@@ -47,5 +39,6 @@ class CategoryDto
     {
         $this->id = $category->getId();
         $this->name = $category->getName();
+        $this->subordinatesCount = $category->getCountAllEmployeesCache();
     }
 }
