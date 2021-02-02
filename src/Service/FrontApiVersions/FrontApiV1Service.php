@@ -12,6 +12,7 @@ use App\FrontApi\Exception\FrontApiException;
 use App\Repository\CategoryRepository;
 use App\Repository\EmployeeRepository;
 use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Component\HttpFoundation\Response;
 
 class FrontApiV1Service implements FrontApiInterface
 {
@@ -49,14 +50,14 @@ class FrontApiV1Service implements FrontApiInterface
     {
         $parent = $this->employeeRepository->findOneBy(['email'=>$createEmployeeDto->getParentEmail()]);
         if(!$parent){
-            throw new FrontApiException("Employee with email '{$createEmployeeDto->getEmail()}' doesnt exist");
+            throw new FrontApiException("Employee with email '{$createEmployeeDto->getEmail()}' doesnt exist",Response::HTTP_BAD_REQUEST);
         }
         if($this->employeeRepository->findOneBy(['email'=>$createEmployeeDto->getEmail()])){
-            throw new FrontApiException('Employee with this email exists');
+            throw new FrontApiException('Employee with this email exists',Response::HTTP_BAD_REQUEST);
         }
         $category = $this->categoryRepository->find($createEmployeeDto->getCategoryId());
         if(!$category){
-            throw new FrontApiException("Category with '{$createEmployeeDto->getCategoryId()}' doesnt exist");
+            throw new FrontApiException("Category with '{$createEmployeeDto->getCategoryId()}' doesnt exist",Response::HTTP_BAD_REQUEST);
         }
         $employee = new Employee();
         $employee->setEmail($createEmployeeDto->getEmail());
@@ -75,13 +76,13 @@ class FrontApiV1Service implements FrontApiInterface
     public function createCategory(CreateCategoryRequestInterface $createCategoryDto): bool
     {
         if($this->categoryRepository->findOneBy(['name'=>$createCategoryDto->getName()])){
-            throw new FrontApiException('Category with this name exists');
+            throw new FrontApiException('Category with this name exists',Response::HTTP_BAD_REQUEST);
         }
         $parent = null;
         if($createCategoryDto->getParentCategoryId()){
             $parent = $this->categoryRepository->find($createCategoryDto->getParentCategoryId());
             if(!$parent){
-                throw new FrontApiException('The parent category does not exist');
+                throw new FrontApiException('The parent category does not exist',Response::HTTP_BAD_REQUEST);
             }
         }
         $category = new Category();

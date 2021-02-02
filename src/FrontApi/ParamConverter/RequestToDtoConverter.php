@@ -9,6 +9,8 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Sensio\Bundle\FrameworkExtraBundle\Request\ParamConverter\ParamConverterInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Validator\ConstraintViolation;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 /**
@@ -50,6 +52,16 @@ class RequestToDtoConverter implements ParamConverterInterface
         $class = $configuration->getClass();
         $dto = new $class();
         $dto->resolveByRequest($request);
+        /* @var ConstraintViolation[]  $errors*/
+        $errors = $this->validator->validate($dto);
+        $errors_ = [];
+        if (count($errors) > 0) {
+            foreach ($errors as $error){
+                $errors_[] = [$error->getPropertyPath() => $error->getMessage()];
+            }
+            throw new FrontApiException(json_encode($errors_),Response::HTTP_BAD_REQUEST);
+        }
+
         $request->attributes->set($configuration->getName(), $dto);
     }
 

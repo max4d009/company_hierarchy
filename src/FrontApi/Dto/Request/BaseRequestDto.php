@@ -4,6 +4,7 @@ namespace App\FrontApi\Dto\Request;
 
 use App\FrontApi\Exception\FrontApiException;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Validator\Context\ExecutionContextInterface;
 
 
@@ -61,10 +62,10 @@ abstract class BaseRequestDto
     {
         if($request->getMethod() == 'POST' or $request->getMethod() == 'PUT'){
             if($request->getContent() == ''){
-                throw new FrontApiException('Request body raw is null');
+                throw new FrontApiException('Request body raw is null',Response::HTTP_BAD_REQUEST);
             }
             if(!$this->isJSON($request->getContent())){
-                throw new FrontApiException('Request body raw is bad json');
+                throw new FrontApiException('Request body raw is bad json',Response::HTTP_BAD_REQUEST);
             }
             $params = $this->getOptions($request, true);
         } else {
