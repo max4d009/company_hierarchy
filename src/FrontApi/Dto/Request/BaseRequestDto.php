@@ -42,14 +42,9 @@ abstract class BaseRequestDto
      */
     protected function getOptions(Request $request, $postBody = true)
     {
-        // Если POST запрос
         if($postBody) {
-            // Получить параметры из запроса
             $params = json_decode($request->getContent(),true);
-            // Положить их в список на обновление. Т.к. в POST запрсое обычно данные которые нужно обновить
-            $this->setUpdateList($params);
         } else {
-            // Получить параметры из запроса
             $params = array_merge($request->request->all(), $request->query->all());
         }
         return $params;

@@ -2,10 +2,13 @@
 
 namespace App\FrontApi\Controller;
 
+use App\FrontApi\Dto\Request\V1\CreateCategoryDto;
+use App\FrontApi\Dto\Request\V1\CreateEmployeeDto;
 use App\FrontApi\Dto\Request\V1\GetCategoriesRequestDto;
 use App\FrontApi\Dto\Request\V1\GetEmployeesRequestDto;
 use App\FrontApi\Dto\Response\V1\GetCategoriesResponseDto;
 use App\FrontApi\Dto\Response\V1\GetEmployeesResponseDto;
+use App\FrontApi\Dto\Response\V1\SuccessResponseDto;
 use App\Service\FrontApiVersions\FrontApiContext;
 use FOS\RestBundle\Controller\AbstractFOSRestController;
 use Symfony\Component\Routing\Annotation\Route;
@@ -35,10 +38,9 @@ class FrontApiController extends AbstractFOSRestController
      *     name="version",
      *     example="v1",
      *     in="path",
-     *     description="API Version",
+     *     description="API version",
      *     @OA\Schema(type="string"),
      * )
-     *
      * @OA\Response(
      *     response="200",
      *     @Model(type=GetCategoriesResponseDto::class, groups={"categories_req"}),
@@ -67,10 +69,9 @@ class FrontApiController extends AbstractFOSRestController
      *     name="version",
      *     example="v1",
      *     in="path",
-     *     description="API Version",
+     *     description="API version",
      *     @OA\Schema(type="string"),
      * )
-     *
      * @OA\Response(
      *     response="200",
      *     @Model(type=GetEmployeesResponseDto::class, groups={"employees_req"}),
@@ -88,6 +89,65 @@ class FrontApiController extends AbstractFOSRestController
     {
         $employeeList = $this->frontApiContext->getApiService($version)->getEmployees($dto);
         return GetEmployeesResponseDto::fetch($employeeList);
+    }
+
+    /**
+     * Add a new category
+     *
+     * @OA\Parameter(
+     *     name="version",
+     *     example="v1",
+     *     in="path",
+     *     description="API version",
+     *     @OA\Schema(type="string"),
+     * )
+     * @OA\Response(
+     *     response="200",
+     *     @Model(type=SuccessResponseDto::class),
+     *      description="Add a new category"
+     * )
+     * @Rest\Post("/{version}/category")
+     * @Rest\View(statusCode=200)
+     *
+     * @param CreateCategoryDto $dto
+     * @param string $version
+     * @return SuccessResponseDto
+     * @throws \Exception
+     */
+    public function addCategory(CreateCategoryDto $dto, string $version)
+    {
+        $result = $this->frontApiContext->getApiService($version)->createCategory($dto);
+        return SuccessResponseDto::fetch($result);
+    }
+
+
+    /**
+     * Add a new employee
+     *
+     * @OA\Parameter(
+     *     name="version",
+     *     example="v1",
+     *     in="path",
+     *     description="API version",
+     *     @OA\Schema(type="string"),
+     * )
+     * @OA\Response(
+     *     response="200",
+     *     @Model(type=SuccessResponseDto::class),
+     *      description="Add a new employee"
+     * )
+     * @Rest\Post("/{version}/employee")
+     * @Rest\View(statusCode=200)
+     *
+     * @param CreateEmployeeDto $dto
+     * @param string $version
+     * @return SuccessResponseDto
+     * @throws \Exception
+     */
+    public function addEmployee(CreateEmployeeDto $dto, string $version)
+    {
+        $result = $this->frontApiContext->getApiService($version)->createEmployee($dto);
+        return SuccessResponseDto::fetch($result);
     }
 
 

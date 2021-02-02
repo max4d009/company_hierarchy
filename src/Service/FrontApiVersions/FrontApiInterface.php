@@ -5,10 +5,10 @@ namespace App\Service\FrontApiVersions;
 
 use App\Entity\Category;
 use App\Entity\Employee;
+use App\FrontApi\Dto\Interfaces\Request\CreateCategoryRequestInterface;
 use App\FrontApi\Dto\Interfaces\Request\CreateEmployeeRequestInterface;
 use App\FrontApi\Dto\Interfaces\Request\GetCategoriesRequestInterface;
 use App\FrontApi\Dto\Interfaces\Request\GetEmployeesRequestInterface;
-use App\FrontApi\Dto\Interfaces\Response\CreateEmployeeResponseInterface;
 
 /**
  * Interface FrontApiInterface
@@ -22,9 +22,15 @@ interface FrontApiInterface
 
     /**
      * @param CreateEmployeeRequestInterface $createEmployeeDto
-     * @return CreateEmployeeResponseInterface
+     * @return bool
      */
-    public function createEmployee(CreateEmployeeRequestInterface $createEmployeeDto) : CreateEmployeeResponseInterface;
+    public function createEmployee(CreateEmployeeRequestInterface $createEmployeeDto) : bool;
+
+    /**
+     * @param CreateCategoryRequestInterface $createCategoryDto
+     * @return bool
+     */
+    public function createCategory(CreateCategoryRequestInterface $createCategoryDto) : bool;
 
     /**
      * @param GetCategoriesRequestInterface $createEmployeeDto
