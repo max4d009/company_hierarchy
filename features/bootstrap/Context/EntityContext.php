@@ -97,6 +97,17 @@ class EntityContext extends AbstractFeatureContext
         $this->assertByTableAndClassName($entityName, $table, true);
     }
 
+    /**
+     * @Then Searched for entity :entityName by field-val :key-:val and remember as :storageKey
+     * @throws Exception
+     */
+    public function searchedForEntityByFieldValAndRememberAs($entityName, $key, $val, $storageKey)
+    {
+        $repository = $this->getEntityRepositoryByEntityName($entityName);
+        $entity = $repository->findOneBy([$key=>$val]);
+        $this->featureStorage->set($storageKey, $entity);
+    }
+
 
     /**
      * @Then Searched in table for entity :entityName and not found the records:

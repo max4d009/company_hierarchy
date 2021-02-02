@@ -41,6 +41,13 @@ class FrontApiController extends AbstractFOSRestController
      *     description="API version",
      *     @OA\Schema(type="string"),
      * )
+     * @OA\Parameter(
+     *     name="categoryId",
+     *     example="1",
+     *     in="query",
+     *     description="Parent category id",
+     *     @OA\Schema(type="integer"),
+     * )
      * @OA\Response(
      *     response="200",
      *     @Model(type=GetCategoriesResponseDto::class, groups={"categories_req"}),
@@ -101,6 +108,9 @@ class FrontApiController extends AbstractFOSRestController
      *     description="API version",
      *     @OA\Schema(type="string"),
      * )
+     * @OA\RequestBody(
+     *     @Model(type=CreateCategoryDto::class)
+     * )
      * @OA\Response(
      *     response="200",
      *     @Model(type=SuccessResponseDto::class),
@@ -130,6 +140,9 @@ class FrontApiController extends AbstractFOSRestController
      *     in="path",
      *     description="API version",
      *     @OA\Schema(type="string"),
+     * )
+     * @OA\RequestBody(
+     *     @Model(type=CreateEmployeeDto::class)
      * )
      * @OA\Response(
      *     response="200",
