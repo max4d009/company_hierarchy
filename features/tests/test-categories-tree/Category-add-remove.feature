@@ -1,9 +1,10 @@
-Feature: CategoriesTree
+@non-api
+Feature: Category-add-remove
 
   Background:
     Given Set entity namespace as "App\Entity"
 
-  Scenario: test nested sets categories.
+  Scenario: Test add and remove categories.
 
     # Add one tree hierarchy
     Given Table for entity "Category" contains:

@@ -35,3 +35,7 @@ services:
         class: App\Service\FrontApiVersions\FrontApiV1Service
         tags:
             - { name: front_api_service }
+
+    App\EventListener\DatabaseActivitySubscriber:
+        tags:
+            - { name: 'doctrine.event_subscriber' }

@@ -73,6 +73,11 @@ class Category
     private $employeeList;
 
     /**
+     * @ORM\Column(type="integer", nullable=true)
+     */
+    private int $countAllEmployeesCache = 0;
+
+    /**
      * @return string
      */
     public function getName(): string
@@ -198,6 +203,22 @@ class Category
     public function setEmployeeList($employeeList): void
     {
         $this->employeeList = $employeeList;
+    }
+
+    /**
+     * @return int
+     */
+    public function getCountAllEmployeesCache(): int
+    {
+        return $this->countAllEmployeesCache;
+    }
+
+    /**
+     * @param int $countAllEmployeesCache
+     */
+    public function setCountAllEmployeesCache(int $countAllEmployeesCache): void
+    {
+        $this->countAllEmployeesCache = $countAllEmployeesCache;
     }
 
 
