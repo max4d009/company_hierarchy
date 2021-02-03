@@ -7,12 +7,16 @@ use Doctrine\ORM\Mapping as ORM;
 use Doctrine\ORM\PersistentCollection;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Gedmo\Mapping\Annotation as Gedmo;
-use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * Class Employee
  * @package App\Entity
- * @ORM\Table(indexes={})
+ * @ORM\Table(name="employee", indexes={
+ *     @ORM\Index(name="category_id_index", columns={"category_id"}),
+ *     @ORM\Index(name="tree_root_index", columns={"tree_root"}),
+ *     @ORM\Index(name="parent_id_index", columns={"parent_id"}),
+ *     @ORM\Index(name="email_index", columns={"email"})
+ *     })
  * @ORM\Entity(repositoryClass="App\Repository\EmployeeRepository")
  * @UniqueEntity(
  *     fields={"email"}

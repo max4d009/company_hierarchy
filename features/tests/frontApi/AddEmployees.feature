@@ -7,40 +7,6 @@ Feature: AddEmployees
     Given Auth with user "User1"
 
 
-  Scenario: AddEmployees.
-    Given Table for entity "Category" contains:
-      | storage_key | name |
-      | c1          | cat1 |
-      | c2          | cat2 |
-      | c3          | cat3 |
-
-    Given Table for entity "Employee" contains:
-      | storage_key | category | firstName | lastName | email       |
-      | e1          | {{c1}}   | f1        | l1       | e1_@test.ru |
-
-    And I send a POST request to "/front-api/v1/employee" with json:
-    """
-    {
-      "firstName": "f2",
-      "lastName": "l2",
-      "email": "e2@test.ru",
-      "parentEmail": "{{e1.email}}",
-      "categoryId": {{c2.id}}
-    }
-    """
-    And the response should contain json:
-    """
-    {"success": true}
-    """
-    Then Searched for entity "Employee" by field-val "firstName"-"f2" and remember as "e2"
-    Then Searched in table for entity "Employee" and found the records:
-      | id         | countAllEmployeesCache | lft | lvl | rgt | root      | parent    | category  |
-      | {{e1.id}}  | 1                      | 1   | 0   | 4   | {{e1.id}} | null      | {{c1.id}} |
-      | {{e2.id}}  | 0                      | 2   | 1   | 3   | {{e1.id}} | {{e1.id}} | {{c2.id}} |
-
-
-
-
   Scenario: Initial set of data with categories list and employees
     Given Table for entity "Category" contains:
       | storage_key | name        |
@@ -170,3 +136,34 @@ Feature: AddEmployees
      ]
     }
     """
+
+  Scenario: AddEmployees.
+    Given Table for entity "Category" contains:
+      | storage_key | name |
+      | c1          | cat1 |
+      | c2          | cat2 |
+      | c3          | cat3 |
+    Given Table for entity "Employee" contains:
+      | storage_key | category | firstName | lastName | email       |
+      | e1          | {{c1}}   | f1        | l1       | e1_@test.ru |
+
+    And I send a POST request to "/front-api/v1/employee" with json:
+    """
+    {
+      "firstName": "f2",
+      "lastName": "l2",
+      "email": "e2@test.ru",
+      "parentEmail": "{{e1.email}}",
+      "categoryId": {{c2.id}}
+    }
+    """
+    And the response should contain json:
+    """
+    {"success": true}
+    """
+
+    Then Searched for entity "Employee" by field-val "firstName"-"f2" and remember as "e2"
+    Then Searched in table for entity "Employee" and found the records:
+      | id         | countAllEmployeesCache | lft | lvl | rgt | root      | parent    | category  |
+      | {{e1.id}}  | 1                      | 1   | 0   | 4   | {{e1.id}} | null      | {{c1.id}} |
+      | {{e2.id}}  | 0                      | 2   | 1   | 3   | {{e1.id}} | {{e1.id}} | {{c2.id}} |
