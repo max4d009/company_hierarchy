@@ -43,19 +43,19 @@ class FrontApiController extends AbstractFOSRestController
      * @OA\Response(
      *     response="200",
      *     @Model(type=GetCategoriesResponseDto::class, groups={"categories_req"}),
-     *      description="Get a List of Category"
+     *      description="Get a List of category"
      * )
      * @Rest\Get("/categories")
      * @Rest\View(statusCode=200, serializerGroups={"categories_req"})
      * @OA\Response(
      *     response="401",
      *     @Model(type=ErrorResponseDto::class),
-     *      description="Add a new category"
+     *      description="Get a List of category error"
      * )
      * @OA\Response(
      *     response="400",
      *     @Model(type=ErrorResponseDto::class),
-     *      description="Add a new category"
+     *      description="Get a List of category error"
      * )
      * @param GetCategoriesRequestDto $dto
      * @param string $version
@@ -82,17 +82,17 @@ class FrontApiController extends AbstractFOSRestController
      * @OA\Response(
      *     response="200",
      *     @Model(type=GetEmployeesResponseDto::class, groups={"employees_req"}),
-     *      description="Get a List of Employees"
+     *      description="Get a List of employees"
      * )
      * @OA\Response(
      *     response="401",
      *     @Model(type=ErrorResponseDto::class),
-     *      description="Add a new category"
+     *      description="Get a List of employees error"
      * )
      * @OA\Response(
      *     response="400",
      *     @Model(type=ErrorResponseDto::class),
-     *      description="Add a new category"
+     *      description="Get a List of employees error"
      * )
      * @Rest\View(statusCode=200, serializerGroups={"employees_req"})
      *
@@ -159,12 +159,12 @@ class FrontApiController extends AbstractFOSRestController
      * @OA\Response(
      *     response="401",
      *     @Model(type=ErrorResponseDto::class),
-     *      description="Add a new category"
+     *      description="Add a new employee"
      * )
      * @OA\Response(
      *     response="400",
      *     @Model(type=ErrorResponseDto::class),
-     *      description="Add a new category"
+     *      description="Add a new employee"
      * )
      * @param CreateEmployeeDto $dto
      * @param string $version
