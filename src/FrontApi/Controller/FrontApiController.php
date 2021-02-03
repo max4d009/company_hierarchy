@@ -9,6 +9,7 @@ use App\FrontApi\Dto\Request\V1\GetEmployeesRequestDto;
 use App\FrontApi\Dto\Response\V1\GetCategoriesResponseDto;
 use App\FrontApi\Dto\Response\V1\GetEmployeesResponseDto;
 use App\FrontApi\Dto\Response\V1\SuccessResponseDto;
+use App\FrontApi\Dto\Response\V1\ErrorResponseDto;
 use App\Service\FrontApiVersions\FrontApiContext;
 use FOS\RestBundle\Controller\AbstractFOSRestController;
 use Symfony\Component\Routing\Annotation\Route;
@@ -18,9 +19,14 @@ use OpenApi\Annotations as OA;
 
 
 /**
- *
- *
- * @Route("/front-api")
+ * @OA\Parameter(
+ *     name="version",
+ *     example="v1",
+ *     in="path",
+ *     description="API version",
+ *     @OA\Schema(type="string"),
+ * )
+ * @Route("/front-api/{version}")
  */
 class FrontApiController extends AbstractFOSRestController
 {
@@ -34,28 +40,23 @@ class FrontApiController extends AbstractFOSRestController
     /**
      * Get a List of categories
      *
-     * @OA\Parameter(
-     *     name="version",
-     *     example="v1",
-     *     in="path",
-     *     description="API version",
-     *     @OA\Schema(type="string"),
-     * )
-     * @OA\Parameter(
-     *     name="categoryId",
-     *     example="1",
-     *     in="query",
-     *     description="Parent category id",
-     *     @OA\Schema(type="integer"),
-     * )
      * @OA\Response(
      *     response="200",
      *     @Model(type=GetCategoriesResponseDto::class, groups={"categories_req"}),
      *      description="Get a List of Category"
      * )
-     * @Rest\Get("/{version}/categories")
+     * @Rest\Get("/categories")
      * @Rest\View(statusCode=200, serializerGroups={"categories_req"})
-     *
+     * @OA\Response(
+     *     response="401",
+     *     @Model(type=ErrorResponseDto::class),
+     *      description="Add a new category"
+     * )
+     * @OA\Response(
+     *     response="400",
+     *     @Model(type=ErrorResponseDto::class),
+     *      description="Add a new category"
+     * )
      * @param GetCategoriesRequestDto $dto
      * @param string $version
      * @return GetCategoriesResponseDto
@@ -70,21 +71,29 @@ class FrontApiController extends AbstractFOSRestController
     /**
      * Get a list of employees
      *
-     * @Rest\Get("/{version}/employees")
-     *
+     * @Rest\Get("/employees")
      * @OA\Parameter(
-     *     name="version",
-     *     example="v1",
-     *     in="path",
-     *     description="API version",
-     *     @OA\Schema(type="string"),
+     *     name="categoryId",
+     *     example="1",
+     *     in="query",
+     *     description="Parent category id",
+     *     @OA\Schema(type="integer"),
      * )
      * @OA\Response(
      *     response="200",
      *     @Model(type=GetEmployeesResponseDto::class, groups={"employees_req"}),
      *      description="Get a List of Employees"
      * )
-     *
+     * @OA\Response(
+     *     response="401",
+     *     @Model(type=ErrorResponseDto::class),
+     *      description="Add a new category"
+     * )
+     * @OA\Response(
+     *     response="400",
+     *     @Model(type=ErrorResponseDto::class),
+     *      description="Add a new category"
+     * )
      * @Rest\View(statusCode=200, serializerGroups={"employees_req"})
      *
      * @param GetEmployeesRequestDto $dto
@@ -101,13 +110,6 @@ class FrontApiController extends AbstractFOSRestController
     /**
      * Add a new category
      *
-     * @OA\Parameter(
-     *     name="version",
-     *     example="v1",
-     *     in="path",
-     *     description="API version",
-     *     @OA\Schema(type="string"),
-     * )
      * @OA\RequestBody(
      *     @Model(type=CreateCategoryDto::class)
      * )
@@ -116,7 +118,17 @@ class FrontApiController extends AbstractFOSRestController
      *     @Model(type=SuccessResponseDto::class),
      *      description="Add a new category"
      * )
-     * @Rest\Post("/{version}/category")
+     * @OA\Response(
+     *     response="401",
+     *     @Model(type=ErrorResponseDto::class),
+     *      description="Add a new category"
+     * )
+     * @OA\Response(
+     *     response="400",
+     *     @Model(type=ErrorResponseDto::class),
+     *      description="Add a new category"
+     * )
+     * @Rest\Post("/category")
      * @Rest\View(statusCode=200)
      *
      * @param CreateCategoryDto $dto
@@ -134,13 +146,6 @@ class FrontApiController extends AbstractFOSRestController
     /**
      * Add a new employee
      *
-     * @OA\Parameter(
-     *     name="version",
-     *     example="v1",
-     *     in="path",
-     *     description="API version",
-     *     @OA\Schema(type="string"),
-     * )
      * @OA\RequestBody(
      *     @Model(type=CreateEmployeeDto::class)
      * )
@@ -149,9 +154,18 @@ class FrontApiController extends AbstractFOSRestController
      *     @Model(type=SuccessResponseDto::class),
      *      description="Add a new employee"
      * )
-     * @Rest\Post("/{version}/employee")
+     * @Rest\Post("/employee")
      * @Rest\View(statusCode=200)
-     *
+     * @OA\Response(
+     *     response="401",
+     *     @Model(type=ErrorResponseDto::class),
+     *      description="Add a new category"
+     * )
+     * @OA\Response(
+     *     response="400",
+     *     @Model(type=ErrorResponseDto::class),
+     *      description="Add a new category"
+     * )
      * @param CreateEmployeeDto $dto
      * @param string $version
      * @return SuccessResponseDto

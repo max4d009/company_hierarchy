@@ -3,8 +3,22 @@
 namespace App\Service\FrontApiVersions;
 
 
+use App\FrontApi\Exception\FrontApiException;
+
 class FrontApiContext
 {
+    const V1 = 'v1';
+
+    /**
+     * @return array
+     */
+    public static function getVersionList()
+    {
+        return [
+            self::V1
+        ];
+    }
+
     /**
      * @var FrontApiInterface[]
      */
@@ -27,8 +41,8 @@ class FrontApiContext
      */
     public function getApiService(string $frontApiVersion)
     {
-        if(!in_array($frontApiVersion, FrontApiVersionsEnum::getVersionList())){
-            throw new \Exception('wrong api version');
+        if(!in_array($frontApiVersion, self::getVersionList())){
+            throw new FrontApiException('Wrong api version');
         }
 
         foreach ($this->apiServiceVersions as $service) {

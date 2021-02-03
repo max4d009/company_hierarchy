@@ -39,7 +39,7 @@ class FrontApiV1Service implements FrontApiInterface
      */
     public function getApiVersion(): string
     {
-        return FrontApiVersionsEnum::V1;
+        return FrontApiContext::V1;
     }
 
     /**

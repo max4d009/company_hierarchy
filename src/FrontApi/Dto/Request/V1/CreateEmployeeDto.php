@@ -8,7 +8,6 @@ use App\FrontApi\Dto\Request\BaseRequestDto;
 
 class CreateEmployeeDto extends BaseRequestDto implements CreateEmployeeRequestInterface
 {
-
     /**
      * @var string
      * @Assert\Length(min="2", max="100")
