@@ -1,5 +1,5 @@
 @non-api
-Feature: Employees-add-remove
+Feature: Employees-tree
 
   Background:
     Given Set entity namespace as "App\Entity"
