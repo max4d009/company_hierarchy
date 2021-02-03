@@ -40,13 +40,14 @@ class FrontApiController extends AbstractFOSRestController
     /**
      * Get a List of categories
      *
+     * @Rest\Get("/categories")
+     * @Rest\View(statusCode=200, serializerGroups={"categories_req"})
+     *
      * @OA\Response(
      *     response="200",
      *     @Model(type=GetCategoriesResponseDto::class, groups={"categories_req"}),
      *      description="Get a List of category"
      * )
-     * @Rest\Get("/categories")
-     * @Rest\View(statusCode=200, serializerGroups={"categories_req"})
      * @OA\Response(
      *     response="401",
      *     @Model(type=ErrorResponseDto::class),
@@ -72,6 +73,8 @@ class FrontApiController extends AbstractFOSRestController
      * Get a list of employees
      *
      * @Rest\Get("/employees")
+     * @Rest\View(statusCode=200, serializerGroups={"employees_req"})
+     *
      * @OA\Parameter(
      *     name="categoryId",
      *     example="1",
@@ -94,7 +97,6 @@ class FrontApiController extends AbstractFOSRestController
      *     @Model(type=ErrorResponseDto::class),
      *      description="Get a List of employees error"
      * )
-     * @Rest\View(statusCode=200, serializerGroups={"employees_req"})
      *
      * @param GetEmployeesRequestDto $dto
      * @param string $version
@@ -109,6 +111,9 @@ class FrontApiController extends AbstractFOSRestController
 
     /**
      * Add a new category
+     *
+     * @Rest\Post("/category")
+     * @Rest\View(statusCode=200)
      *
      * @OA\RequestBody(
      *     @Model(type=CreateCategoryDto::class)
@@ -128,8 +133,6 @@ class FrontApiController extends AbstractFOSRestController
      *     @Model(type=ErrorResponseDto::class),
      *      description="Add a new category"
      * )
-     * @Rest\Post("/category")
-     * @Rest\View(statusCode=200)
      *
      * @param CreateCategoryDto $dto
      * @param string $version
@@ -146,6 +149,9 @@ class FrontApiController extends AbstractFOSRestController
     /**
      * Add a new employee
      *
+     * @Rest\Post("/employee")
+     * @Rest\View(statusCode=200)
+     *
      * @OA\RequestBody(
      *     @Model(type=CreateEmployeeDto::class)
      * )
@@ -154,8 +160,6 @@ class FrontApiController extends AbstractFOSRestController
      *     @Model(type=SuccessResponseDto::class),
      *      description="Add a new employee"
      * )
-     * @Rest\Post("/employee")
-     * @Rest\View(statusCode=200)
      * @OA\Response(
      *     response="401",
      *     @Model(type=ErrorResponseDto::class),
