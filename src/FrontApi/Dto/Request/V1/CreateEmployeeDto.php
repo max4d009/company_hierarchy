@@ -2,7 +2,7 @@
 
 namespace App\FrontApi\Dto\Request\V1;
 
-
+use Symfony\Component\Validator\Constraints as Assert;
 use App\FrontApi\Dto\Interfaces\Request\CreateEmployeeRequestInterface;
 use App\FrontApi\Dto\Request\BaseRequestDto;
 
@@ -11,22 +11,22 @@ class CreateEmployeeDto extends BaseRequestDto implements CreateEmployeeRequestI
 
     /**
      * @var string
+     * @Assert\Length(min="2", max="100")
      */
     private string $firstName;
     /**
      * @var string
+     * @Assert\Length(min="2", max="100")
      */
     private string $lastName;
     /**
      * @var string
+     * @Assert\Email()
      */
     private string $email;
     /**
-     * @var string
-     */
-    private string $parentEmail;
-    /**
      * @var int
+     * @Assert\PositiveOrZero()
      */
     private int $categoryId;
 

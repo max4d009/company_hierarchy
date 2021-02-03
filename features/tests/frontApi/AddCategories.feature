@@ -12,13 +12,14 @@ Feature: addCategories
     """
     {"name": "test1"}
     """
+    And print last response
     And the response should contain json:
     """
     {"success": true}
     """
     Then Searched in table for entity "Category" and found the records:
-      | name  | parent |
-      | test1 | null   |
+      | name  |
+      | test1 |
     And Searched for entity "Category" by field-val "name"-"test1" and remember as "test1"
 
 
@@ -32,6 +33,5 @@ Feature: addCategories
     """
     And Searched for entity "Category" by field-val "name"-"test1" and remember as "test2"
     Then Searched in table for entity "Category" and found the records:
-      | name  | parent       |
-      | test1 | null         |
-      | test2 | {{test1.id}} |
+      | name  |
+      | test1 |

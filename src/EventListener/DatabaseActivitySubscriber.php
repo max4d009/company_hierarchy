@@ -3,8 +3,7 @@
 namespace App\EventListener;
 
 use App\Entity\Employee;
-use App\Repository\CategoryRepository;
-use App\Service\CategoryService;
+use App\Service\EmployeeService;
 use Doctrine\Common\EventSubscriber;
 use Doctrine\ORM\Events;
 use Doctrine\Persistence\Event\LifecycleEventArgs;
@@ -29,23 +28,18 @@ class DatabaseActivitySubscriber implements EventSubscriber
     }
 
     /**
-     * @var CategoryRepository
+     * @var EmployeeService
      */
-    private CategoryRepository $categoryRepository;
-    /**
-     * @var CategoryService
-     */
-    private CategoryService $categoryService;
+    private EmployeeService $employeeService;
+
 
     /**
      * DatabaseActivitySubscriber constructor.
-     * @param CategoryRepository $categoryRepository
-     * @param CategoryService $categoryService
+     * @param EmployeeService $employeeService
      */
-    public function __construct(CategoryRepository $categoryRepository, CategoryService $categoryService)
+    public function __construct(EmployeeService $employeeService)
     {
-        $this->categoryRepository = $categoryRepository;
-        $this->categoryService = $categoryService;
+        $this->employeeService = $employeeService;
     }
 
 
@@ -55,9 +49,9 @@ class DatabaseActivitySubscriber implements EventSubscriber
     public function postPersist(LifecycleEventArgs $args): void
     {
         $obj = $args->getObject();
-        // Recalculate category.countAllEmployeesCache
-        if($obj instanceof Employee and $obj->getCategory()){
-           $this->categoryService->cacheSubordinatesCountTree($obj->getCategory(), true);
+        // Recalculate employee.countAllEmployeesCache
+        if($obj instanceof Employee){
+           $this->employeeService->cacheSubordinatesCountTree($obj, true);
         }
     }
 
@@ -67,9 +61,9 @@ class DatabaseActivitySubscriber implements EventSubscriber
     public function postRemove(LifecycleEventArgs $args): void
     {
         $obj = $args->getObject();
-        // Recalculate category.countAllEmployeesCache
-        if($obj instanceof Employee and $obj->getCategory()){
-            $this->categoryService->cacheSubordinatesCountTree($obj->getCategory(), false);
+        // Recalculate employee.countAllEmployeesCache
+        if($obj instanceof Employee){
+            $this->employeeService->cacheSubordinatesCountTree($obj, false);
         }
     }
 

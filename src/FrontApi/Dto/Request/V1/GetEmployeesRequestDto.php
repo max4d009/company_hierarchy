@@ -2,32 +2,35 @@
 
 namespace App\FrontApi\Dto\Request\V1;
 
-
+use Symfony\Component\Validator\Constraints as Assert;
 use App\FrontApi\Dto\Interfaces\Request\GetEmployeesRequestInterface;
 use App\FrontApi\Dto\Request\BaseRequestDto;
 
 class GetEmployeesRequestDto extends BaseRequestDto implements GetEmployeesRequestInterface
 {
     /**
-     * @var int
+     * @var null|int
+     * @Assert\PositiveOrZero()
      */
-    private int $categoryId = 0;
+    private ?int $categoryId = null;
 
     /**
-     * @return int
+     * @return int|null
      */
-    public function getCategoryId(): int
+    public function getCategoryId(): ?int
     {
         return $this->categoryId;
     }
 
     /**
-     * @param int $categoryId
+     * @param int|null $categoryId
      */
-    public function setCategoryId(int $categoryId): void
+    public function setCategoryId(?int $categoryId): void
     {
         $this->categoryId = $categoryId;
     }
+
+
 
 
 }

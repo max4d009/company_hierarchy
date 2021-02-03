@@ -12,9 +12,4 @@ interface CreateCategoryRequestInterface
      * @return string
      */
     public function getName(): string;
-
-    /**
-     * @return int|null
-     */
-    public function getParentCategoryId(): ?int;
 }

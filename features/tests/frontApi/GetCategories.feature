@@ -6,10 +6,10 @@ Feature: getCategories
 
   Scenario: getCategories.
     Given Table for entity "Category" contains:
-      | storage_key | name | parent |
-      | c1          | cat1 | null   |
-      | c2          | cat2 | {{c1}} |
-      | c3          | cat3 | {{c2}} |
+      | storage_key | name |
+      | c1          | cat1 |
+      | c2          | cat2 |
+      | c3          | cat3 |
 
     And I send a GET request to "/front-api/v1/categories"
     And print last response

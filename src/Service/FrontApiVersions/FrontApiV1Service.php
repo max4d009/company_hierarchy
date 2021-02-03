@@ -64,6 +64,7 @@ class FrontApiV1Service implements FrontApiInterface
         $employee->setFirstName($createEmployeeDto->getFirstName());
         $employee->setLastName($createEmployeeDto->getLastName());
         $employee->setCategory($category);
+        $employee->setParent($parent);
         $this->em->persist($employee);
         $this->em->flush();
         return true;
@@ -78,16 +79,8 @@ class FrontApiV1Service implements FrontApiInterface
         if($this->categoryRepository->findOneBy(['name'=>$createCategoryDto->getName()])){
             throw new FrontApiException('Category with this name exists',Response::HTTP_BAD_REQUEST);
         }
-        $parent = null;
-        if($createCategoryDto->getParentCategoryId()){
-            $parent = $this->categoryRepository->find($createCategoryDto->getParentCategoryId());
-            if(!$parent){
-                throw new FrontApiException('The parent category does not exist',Response::HTTP_BAD_REQUEST);
-            }
-        }
         $category = new Category();
         $category->setName($createCategoryDto->getName());
-        if($parent) $category->setParent($parent);
         $this->em->persist($category);
         $this->em->flush();
         return true;
@@ -106,10 +99,14 @@ class FrontApiV1Service implements FrontApiInterface
      */
     public function getEmployees(GetEmployeesRequestInterface $createEmployeeDto): array
     {
+        $qb = $this->employeeRepository->createQueryBuilder('e');
+        $qb->select('e');
+        $qb->innerJoin('e.category', 'c');
         if($createEmployeeDto->getCategoryId()){
-            return $this->employeeRepository->findBy(['category'=>$createEmployeeDto->getCategoryId()]);
+            $qb->where('e.category = :category')->setParameter('category', $createEmployeeDto->getCategoryId());
         }
-        return $this->employeeRepository->findAll();
+        $qb->orderBy('e.countAllEmployeesCache', 'ASC');
+        return $qb->getQuery()->getResult();
     }
 }
 

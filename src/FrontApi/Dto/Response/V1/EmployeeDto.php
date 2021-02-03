@@ -2,7 +2,6 @@
 
 namespace App\FrontApi\Dto\Response\V1;
 
-
 use App\Entity\Employee;
 use JMS\Serializer\Annotation as Serializer;
 use Nelmio\ApiDocBundle\Annotation\Model;
@@ -39,6 +38,12 @@ class EmployeeDto
      * @Serializer\Groups({"employees_req"})
      */
     private CategoryDto $category;
+    /**
+     * @var int
+     * @OA\Property(description="Count of all subordinated employees.")
+     * @Serializer\Groups({"employees_req"})
+     */
+    private int $subordinatesCount;
 
 
     /**
@@ -50,6 +55,7 @@ class EmployeeDto
         $this->firstName = $employee->getFirstName();
         $this->lastName = $employee->getLastName();
         $this->email = $employee->getEmail();
+        $this->subordinatesCount = $employee->getCountAllEmployeesCache();
         $categoryDto = new CategoryDto();
         $categoryDto->fillFromEntity($employee->getCategory());
         $this->category = $categoryDto;
@@ -134,5 +140,22 @@ class EmployeeDto
     {
         $this->category = $category;
     }
+
+    /**
+     * @return int
+     */
+    public function getSubordinatesCount(): int
+    {
+        return $this->subordinatesCount;
+    }
+
+    /**
+     * @param int $subordinatesCount
+     */
+    public function setSubordinatesCount(int $subordinatesCount): void
+    {
+        $this->subordinatesCount = $subordinatesCount;
+    }
+
 
 }

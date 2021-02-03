@@ -3,8 +3,8 @@
 namespace App\Repository;
 
 use App\Entity\Category;
-use Doctrine\ORM\EntityManagerInterface;
-use Gedmo\Tree\Entity\Repository\NestedTreeRepository;
+use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\Persistence\ManagerRegistry;
 
 /**
  * @method Category|null find($id, $lockMode = null, $lockVersion = null)
@@ -12,12 +12,14 @@ use Gedmo\Tree\Entity\Repository\NestedTreeRepository;
  * @method Category[]    findAll()
  * @method Category[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
  */
-class CategoryRepository extends NestedTreeRepository
+class CategoryRepository extends ServiceEntityRepository
 {
-
-    public function __construct(EntityManagerInterface $manager)
+    /**
+     * EmployeeRepository constructor.
+     * @param ManagerRegistry $registry
+     */
+    public function __construct(ManagerRegistry $registry)
     {
-        parent::__construct($manager, $manager->getClassMetadata(Category::class));
+        parent::__construct($registry, Category::class);
     }
-
 }

@@ -2,7 +2,6 @@
 
 namespace App\FrontApi\Dto\Request\V1;
 
-
 use App\FrontApi\Dto\Interfaces\Request\CreateCategoryRequestInterface;
 use App\FrontApi\Dto\Request\BaseRequestDto;
 use Symfony\Component\Validator\Constraints as Assert;
@@ -12,15 +11,9 @@ class CreateCategoryDto extends BaseRequestDto implements CreateCategoryRequestI
 {
     /**
      * @var string
-     * @Assert\NotBlank
+     * @Assert\Length(min="5", max="100")
      */
     private string $name;
-    /**
-     * @var null|int
-     * @Assert\IsNull()
-     * @Assert\GreaterThan(0)
-     */
-    private ?int $parentCategoryId = null;
 
     /**
      * @return string
@@ -36,22 +29,6 @@ class CreateCategoryDto extends BaseRequestDto implements CreateCategoryRequestI
     public function setName(string $name): void
     {
         $this->name = $name;
-    }
-
-    /**
-     * @return int|null
-     */
-    public function getParentCategoryId(): ?int
-    {
-        return $this->parentCategoryId;
-    }
-
-    /**
-     * @param int|null $parentCategoryId
-     */
-    public function setParentCategoryId(?int $parentCategoryId): void
-    {
-        $this->parentCategoryId = $parentCategoryId;
     }
 
 

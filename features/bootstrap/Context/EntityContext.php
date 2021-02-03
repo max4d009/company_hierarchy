@@ -246,11 +246,11 @@ class EntityContext extends AbstractFeatureContext
                 $res =  $repository->findOneBy($criteria);
                 if($mustContain){
                     if(!$res){
-                        throw new EntityNotFoundException(sprintf('%s Не найден', $entityName));
+                        throw new EntityNotFoundException(sprintf('%s Не найден', $entityName . ' '. json_encode($criteria)));
                     }
                 } else {
                     if($res){
-                        throw new EntityNotFoundException(sprintf('%s Запись существует, хотя не должна', $entityName));
+                        throw new EntityNotFoundException(sprintf('%s Запись существует, хотя не должна', $entityName . ' '. json_encode($criteria)));
                     }
                 }
                 // For array fields
@@ -443,6 +443,7 @@ class EntityContext extends AbstractFeatureContext
         $id = $this->featureStorage->replacePlaceholderString($id);
         $repository = $this->getEntityRepositoryByEntityName($entityName);
         $entity = $repository->find($id);
+//        print_r($entity);die();
         $this->em->remove($entity);
         $this->em->flush();
     }
